@@ -1,0 +1,701 @@
+<title>Daily English Note</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans+JP:wght@400;500;700&family=Noto+Sans:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow study column, like a pocket vocabulary notebook. Each entry is an index card; the key term in every example is marked with a highlighter stroke. */
+:root {
+  --paper: #f3f5f8;
+  --card: #ffffff;
+  --ink: #1b2233;
+  --muted: #5d6779;
+  --line: #dde2ea;
+  --accent: #2547c9;        /* ink-blue: links, buttons */
+  --accent-soft: #e5eafb;
+  --marker: #ffd84d;        /* highlighter */
+  --marker-ink: #1b2233;
+  --good: #19865a;
+  --bad: #c2372f;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  --f-ipa: "Noto Sans", "Lucida Sans Unicode", "Arial Unicode MS", sans-serif;
+  --radius: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #12151d; --card: #1b2030; --ink: #e8ecf4; --muted: #9aa4b8; --line: #2c3346;
+    --accent: #8ea6ff; --accent-soft: #252e4d; --marker: #c9a521; --marker-ink: #12151d;
+    --good: #4cc68f; --bad: #ff7d73; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #12151d; --card: #1b2030; --ink: #e8ecf4; --muted: #9aa4b8; --line: #2c3346;
+  --accent: #8ea6ff; --accent-soft: #252e4d; --marker: #c9a521; --marker-ink: #12151d;
+  --good: #4cc68f; --bad: #ff7d73; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.7; }
+.wrap { max-width: 680px; margin: 0 auto; padding-block: 20px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 20px; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* header */
+.top { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { font-family: var(--f-display); font-weight: 800; font-size: 26px; letter-spacing: -0.02em; line-height: 1.1; margin: 0; }
+.brand small { display: block; font-family: var(--f-body); font-weight: 500; font-size: 12px; letter-spacing: 0.06em; color: var(--muted); }
+.streak { display: flex; gap: 14px; font-size: 12px; color: var(--muted); }
+.streak b { display: block; font-family: var(--f-display); font-size: 22px; color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1.1; }
+
+/* tabs */
+.tabs { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 4px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; }
+.tabs button { flex: 1; border: 0; background: transparent; padding: 8px 6px; border-radius: 999px; font-weight: 500; font-size: 14px; color: var(--muted); }
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--card); }
+
+/* day nav */
+.daynav { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.daynav .label { text-align: center; flex: 1; }
+.daynav .label strong { font-family: var(--f-display); font-size: 20px; display: block; line-height: 1.2; }
+.daynav .label span { font-size: 12px; color: var(--muted); }
+.iconbtn { border: 1px solid var(--line); background: var(--card); border-radius: 999px; width: 40px; height: 40px; display: grid; place-items: center; flex: none; }
+.iconbtn:disabled { opacity: .35; cursor: default; }
+.iconbtn svg { width: 18px; height: 18px; }
+
+/* entry card */
+.entry { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 20px; display: flex; flex-direction: column; gap: 18px; }
+.entry-head { display: flex; flex-direction: column; gap: 4px; }
+.kind { display: flex; gap: 8px; align-items: center; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.kind .lv { border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; letter-spacing: .04em; }
+.term-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.term { font-family: var(--f-display); font-weight: 700; font-size: clamp(28px, 7vw, 40px); letter-spacing: -0.02em; line-height: 1.15; margin: 0; text-wrap: balance; overflow-wrap: anywhere; }
+.ipa { font-family: var(--f-ipa); color: var(--muted); font-size: 15px; }
+.meaning { font-size: 17px; font-weight: 700; margin: 2px 0 0; }
+.speak { border: 1px solid var(--accent); color: var(--accent); background: var(--accent-soft); border-radius: 999px; height: 34px; padding: 0 12px; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; }
+.speak svg { width: 15px; height: 15px; }
+.speak.sm { height: 28px; padding: 0 9px; font-size: 12px; border-color: transparent; }
+.speak.playing { background: var(--accent); color: var(--card); }
+
+.sec { display: flex; flex-direction: column; gap: 8px; }
+.sec h3 { margin: 0; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.pron-tip { background: var(--paper); border-radius: 10px; padding: 10px 12px; font-size: 14px; }
+.ex { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: start; padding: 10px 0; border-top: 1px dashed var(--line); }
+.ex:first-of-type { border-top: 0; padding-top: 0; }
+.ex .en { font-size: 16px; line-height: 1.55; min-width: 0; }
+.ex .ja { grid-column: 1; color: var(--muted); font-size: 13px; }
+mark { background: linear-gradient(transparent 45%, var(--marker) 45%, var(--marker) 92%, transparent 92%); color: inherit; padding: 0 1px; }
+.usage { font-size: 14px; margin: 0; }
+.usage p { margin: 0 0 6px; }
+.ng { font-size: 13px; border-left: 3px solid var(--bad); padding: 4px 10px; color: var(--ink); }
+.ng b { color: var(--bad); }
+.related { display: flex; flex-direction: column; gap: 6px; }
+.rel { display: flex; align-items: baseline; gap: 10px; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; background: transparent; text-align: left; width: 100%; }
+.rel:hover { border-color: var(--accent); }
+.rel .r-en { font-weight: 700; flex: none; max-width: 55%; overflow-wrap: anywhere; }
+.rel .r-ja { color: var(--muted); font-size: 13px; min-width: 0; }
+.rel .r-tag { margin-left: auto; font-size: 11px; color: var(--accent); flex: none; }
+
+.actions { display: flex; gap: 8px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 14px; }
+.btn { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 500; display: inline-flex; gap: 6px; align-items: center; }
+.btn.on { background: var(--ink); color: var(--card); border-color: var(--ink); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--card); }
+.btn svg { width: 14px; height: 14px; }
+
+.done-banner { text-align: center; font-size: 14px; color: var(--muted); }
+.done-banner b { color: var(--good); }
+
+/* quiz */
+.quiz { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 20px; display: flex; flex-direction: column; gap: 16px; }
+.qprog { display: flex; gap: 4px; }
+.qprog i { flex: 1; height: 4px; border-radius: 2px; background: var(--line); }
+.qprog i.ok { background: var(--good); } .qprog i.ng { background: var(--bad); } .qprog i.cur { background: var(--accent); }
+.qtype { font-size: 12px; color: var(--muted); font-weight: 700; letter-spacing: .06em; }
+.qtext { font-size: 20px; font-weight: 500; line-height: 1.5; margin: 0; overflow-wrap: anywhere; }
+.qtext .blank { display: inline-block; min-width: 5em; border-bottom: 2px solid var(--accent); }
+.qsub { color: var(--muted); font-size: 13px; margin: 0; }
+.choices { display: grid; gap: 8px; }
+.choice { border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 12px 14px; text-align: left; font-size: 15px; }
+.choice:hover:not(:disabled) { border-color: var(--accent); }
+.choice.correct { border-color: var(--good); background: color-mix(in srgb, var(--good) 14%, var(--card)); }
+.choice.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, var(--card)); }
+.choice:disabled { cursor: default; }
+.feedback { font-size: 14px; }
+.score { font-family: var(--f-display); font-size: 48px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+
+/* library */
+.filters { display: flex; gap: 8px; flex-wrap: wrap; }
+.search { flex: 1 1 200px; min-width: 0; border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 8px 14px; font: inherit; color: var(--ink); }
+.chip { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 6px 12px; font-size: 13px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--card); border-color: var(--ink); }
+.list { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.row { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 12px 16px; border-top: 1px solid var(--line); background: transparent; border-left: 0; border-right: 0; border-bottom: 0; text-align: left; width: 100%; }
+.row:first-child { border-top: 0; }
+.row:hover { background: var(--paper); }
+.row .r1 { font-weight: 700; font-size: 16px; min-width: 0; overflow-wrap: anywhere; }
+.row .r2 { color: var(--muted); font-size: 13px; grid-column: 1; min-width: 0; }
+.row .flags { grid-row: 1 / span 2; grid-column: 2; align-self: center; display: flex; gap: 6px; font-size: 12px; color: var(--muted); }
+.flag-l { color: var(--good); } .flag-s { color: var(--accent); }
+.empty { padding: 28px 16px; text-align: center; color: var(--muted); font-size: 14px; }
+
+/* settings */
+.settings { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--muted); justify-content: center; }
+.settings select { font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; }
+.note { font-size: 12px; color: var(--muted); text-align: center; margin: 0; }
+
+.modal-back { position: fixed; inset: 0; background: color-mix(in srgb, var(--ink) 45%, transparent); display: flex; align-items: flex-end; justify-content: center; z-index: 20; padding: 16px; padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); padding-top: calc(16px + env(safe-area-inset-top, 0px)); }
+.modal { max-width: 680px; width: 100%; max-height: 100%; overflow: auto; border-radius: var(--radius); }
+.modal .entry { border: 0; }
+@media (min-width: 700px) { .modal-back { align-items: center; } }
+@media (prefers-reduced-motion: no-preference) {
+  .entry, .quiz { animation: rise .35s ease both; }
+  @keyframes rise { from { transform: translateY(6px); opacity: .6; } to { transform: none; opacity: 1; } }
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <h1 class="brand"><small>毎日5分の実用英語</small>Daily English Note</h1>
+    <div class="streak" aria-label="学習記録">
+      <div><b id="st-streak">0</b>連続日数</div>
+      <div><b id="st-learned">0</b>覚えた表現</div>
+      <div><b id="st-days">0</b>完了日数</div>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="tab-today" aria-selected="true" data-tab="today">今日の表現</button>
+    <button role="tab" id="tab-quiz" aria-selected="false" data-tab="quiz">クイズ</button>
+    <button role="tab" id="tab-library" aria-selected="false" data-tab="library">単語帳</button>
+  </nav>
+
+  <section id="view-today" class="wrap-inner" style="display:flex;flex-direction:column;gap:20px"></section>
+  <section id="view-quiz" hidden></section>
+  <section id="view-library" hidden style="flex-direction:column;gap:12px"></section>
+
+  <div class="settings">
+    <label for="set-voice">発音</label>
+    <select id="set-voice"><option value="en-US">アメリカ英語</option><option value="en-GB">イギリス英語</option></select>
+    <label for="set-rate">速さ</label>
+    <select id="set-rate"><option value="1">ふつう</option><option value="0.75">ゆっくり</option><option value="0.55">とてもゆっくり</option></select>
+  </div>
+  <p class="note" id="tts-note">発音はブラウザの音声読み上げ機能を使います。発音記号は主にアメリカ英語です。</p>
+</div>
+
+<script>
+/* ---------- content ----------
+   Each day = one word + one phrase. In examples, [[...]] marks the target expression. */
+const DAYS = [
+ { word: { en:"reschedule", ipa:"/ˌriːˈskedʒuːl/", pos:"動詞", lv:"B1", ja:"（予定を）変更する・組み直す",
+   pron:"「リ・スケ」の「スケ」を強く。イギリス英語では /ˌriːˈʃedjuːl/「リシェジュール」とも。",
+   ex:[["Can we [[reschedule]] our meeting to Thursday?","会議を木曜日に変更できますか？"],
+       ["The flight was [[rescheduled]] due to bad weather.","悪天候のためフライトの日程が変更された。"]],
+   usage:"日時を別の日に移すときの最も一般的な語。「to + 新しい日時」で変更先を示す。延期だけでなく前倒しにも使える。",
+   ng:"✕ change the schedule of the meeting → 〇 reschedule the meeting のほうが自然で短い。",
+   rel:[["postpone","延期する（後ろにずらす）"],["move up","前倒しにする"],["push back","後ろにずらす（口語）"],["call off","中止する"]] },
+   phrase: { en:"Let me get back to you on that.", lv:"B1", ja:"その件は確認してから折り返しますね。",
+   pron:"Let me は「レミ」、get back は「ゲッバック」と t が消える。back を強く。",
+   ex:[["Good question. [[Let me get back to you on that]] by Friday.","いい質問ですね。金曜日までに折り返します。"],
+       ["I'm not sure about the price. [[Let me get back to you]].","価格はわからないので、確認して連絡します。"]],
+   usage:"すぐ答えられない質問を受けたときの定番。「わかりません」で終わらせず、後で答えると約束できる。ビジネスでも日常でも使える。",
+   rel:[["I'll check and let you know.","確認してお知らせします"],["Let me look into it.","調べてみます"],["I'll get back to you ASAP.","できるだけ早く返事します"]] } },
+
+ { word: { en:"follow up", ipa:"/ˌfɑːloʊ ˈʌp/", pos:"句動詞", lv:"B1", ja:"（その後の）確認・連絡をする",
+   pron:"「ファロウ・アップ」で up を強く。名詞の follow-up は前を強く /ˈfɑːloʊ ʌp/。",
+   ex:[["I'll [[follow up]] with an email after the call.","通話の後でメールでフォローします。"],
+       ["Just [[following up]] on my message from last week.","先週のメッセージの件で確認のご連絡です。"]],
+   usage:"「follow up on + 件名」「follow up with + 人」。返事がないときの催促メールの書き出し \"Just following up on...\" はとても便利で角が立たない。",
+   ng:"✕ follow up the email → 〇 follow up on the email（on を忘れやすい）",
+   rel:[["check in","様子をうかがう"],["touch base","軽く連絡を取る"],["a follow-up email","フォローのメール（名詞）"],["remind","思い出させる"]] },
+   phrase: { en:"I'm running a bit late.", lv:"A2", ja:"少し遅れています。",
+   pron:"running a は「ラニンガ」とつながる。late を強く伸ばさず短く。",
+   ex:[["Sorry, [[I'm running a bit late]]. I'll be there in ten minutes.","ごめん、少し遅れてる。10分で着くよ。"],
+       ["The train is [[running late]] this morning.","今朝は電車が遅れている。"]],
+   usage:"今まさに遅れている最中の連絡に使う。I'm late より「向かっているけど遅れそう」という感じで柔らかい。電車や会議にも使える。",
+   rel:[["I'm on my way.","今向かっています"],["I'll be there in 5.","5分で着きます"],["Sorry to keep you waiting.","お待たせしてすみません"]] } },
+
+ { word: { en:"figure out", ipa:"/ˌfɪɡjər ˈaʊt/", pos:"句動詞", lv:"B1", ja:"（考えて）わかる・解決する",
+   pron:"figure は「フィギャー」、out とつながって「フィギャラウト」。",
+   ex:[["I can't [[figure out]] how to turn this on.","これの電源の入れ方がわからない。"],
+       ["Don't worry, we'll [[figure it out]].","心配しないで、なんとかなるよ。"]],
+   usage:"understand より口語的で「考えて答えにたどり着く」ニュアンス。代名詞は間に入る：figure it out。",
+   ng:"✕ figure out it → 〇 figure it out",
+   rel:[["work out","解決する・うまくいく"],["sort out","整理して片付ける"],["make sense of","意味を理解する"],["solve","解く・解決する"]] },
+   phrase: { en:"That makes sense.", lv:"A2", ja:"なるほど／それなら納得です。",
+   pron:"makes sense は s が続くので「メイクセンス」と一息で。sense を強く。",
+   ex:[["Oh, [[that makes sense]]. Thanks for explaining.","ああ、なるほど。説明ありがとう。"],
+       ["Does [[that make sense]]?","ここまで大丈夫ですか？（伝わってますか？）"]],
+   usage:"相づちの定番。I see より「理屈が通って納得した」感じ。疑問形 Does that make sense? は説明後の確認に便利。",
+   rel:[["I see.","なるほど"],["Got it.","了解・わかった"],["Fair enough.","それはもっともだ"],["That doesn't add up.","つじつまが合わない"]] } },
+
+ { word: { en:"convenient", ipa:"/kənˈviːniənt/", pos:"形容詞", lv:"B1", ja:"都合がいい・便利な",
+   pron:"「ヴィー」を強く長く。カタカナの「コンビニエント」とはリズムが違う。",
+   ex:[["What time is [[convenient]] for you?","何時がご都合よろしいですか？"],
+       ["The hotel is [[convenient]] for the airport.","そのホテルは空港へのアクセスが便利だ。"]],
+   usage:"主語は「時間・物・場所」。人を主語にしない。",
+   ng:"✕ Are you convenient tomorrow? → 〇 Is tomorrow convenient for you? / Are you available tomorrow?",
+   rel:[["available","（人が）空いている"],["handy","手軽で便利な"],["work for","（予定が）大丈夫だ"],["inconvenient","不便な・都合が悪い"]] },
+   phrase: { en:"No worries.", lv:"A2", ja:"大丈夫だよ／気にしないで。",
+   pron:"worries は「ワーリーズ」。r の音でこもらせる。",
+   ex:[["\"Sorry I'm late!\" \"[[No worries]].\"","「遅れてごめん！」「大丈夫だよ」"],
+       ["\"Thanks for your help.\" \"[[No worries]] at all.\"","「手伝ってくれてありがとう」「全然いいよ」"]],
+   usage:"謝罪にもお礼にも返せる万能フレーズ。カジュアルなので、目上の人には No problem や It's no trouble at all も。",
+   rel:[["No problem.","問題ないよ"],["Don't worry about it.","気にしないで"],["It's all good.","全然大丈夫"],["My pleasure.","どういたしまして（丁寧）"]] } },
+
+ { word: { en:"appreciate", ipa:"/əˈpriːʃieɪt/", pos:"動詞", lv:"B1", ja:"感謝する・ありがたく思う／正しく理解する",
+   pron:"「プリー」を強く。「アプリシエイト」。",
+   ex:[["I really [[appreciate]] your help.","手伝ってくれて本当にありがとう。"],
+       ["I'd [[appreciate]] it if you could reply by Monday.","月曜日までにご返信いただけると助かります。"]],
+   usage:"感謝の対象は「物事」。人は目的語にしない（人なら thank）。I'd appreciate it if... は丁寧な依頼の決まり文句。",
+   ng:"✕ I appreciate you for the gift → 〇 I appreciate the gift. / Thank you for the gift.",
+   rel:[["be grateful for","〜に感謝している"],["thank","（人に）感謝する"],["value","大切に思う"],["I owe you one.","借りができたね"]] },
+   phrase: { en:"Could you walk me through it?", lv:"B2", ja:"順を追って説明してもらえますか？",
+   pron:"walk の l は発音しない「ウォーク」。walk me through は「ウォークミスルー」。",
+   ex:[["I'm new to this system. [[Could you walk me through it]]?","このシステムは初めてなので、手順を教えてもらえますか？"],
+       ["Let me [[walk you through]] the process.","プロセスを順番にご説明します。"]],
+   usage:"explain より「一歩ずつ一緒に」というニュアンス。仕事の引き継ぎ、手続き、ソフトの使い方などで頻出。",
+   rel:[["go over","ひととおり確認する"],["break it down","かみ砕いて説明する"],["Can you show me how?","やり方を見せてくれる？"]] } },
+
+ { word: { en:"mention", ipa:"/ˈmenʃən/", pos:"動詞・名詞", lv:"A2", ja:"（軽く）言う・触れる",
+   pron:"「メンション」で最初を強く。",
+   ex:[["As I [[mentioned]] earlier, the deadline is Friday.","先ほど申し上げたとおり、締め切りは金曜日です。"],
+       ["Thanks for [[mentioning]] it.","言ってくれてありがとう。"]],
+   usage:"他動詞なので about は不要。As I mentioned... は会議やメールで話を戻すときに便利。",
+   ng:"✕ mention about the plan → 〇 mention the plan",
+   rel:[["bring up","（話題を）持ち出す"],["point out","指摘する"],["Don't mention it.","どういたしまして"],["refer to","言及する"]] },
+   phrase: { en:"I'm on it.", lv:"A2", ja:"今やってます／すぐやります。",
+   pron:"「アイモニッ」と3語が一つにつながる。最後の t はほぼ聞こえない。",
+   ex:[["\"Can you send the report?\" \"[[I'm on it]].\"","「レポート送ってくれる？」「すぐやります」"],
+       ["Don't worry, the team is [[on it]].","心配しないで、チームが対応中です。"]],
+   usage:"頼まれたことにすぐ取りかかる意思表示。短く頼もしい響き。職場のチャットで頻出。",
+   rel:[["Will do.","了解、やります"],["I'll take care of it.","私が対応します"],["Leave it to me.","任せて"]] } },
+
+ { word: { en:"struggle", ipa:"/ˈstrʌɡəl/", pos:"動詞・名詞", lv:"B1", ja:"苦労する・奮闘する",
+   pron:"「ストラグル」の「ラ」は口を小さく開ける /ʌ/。",
+   ex:[["I'm [[struggling]] to keep up with my emails.","メールの処理が追いつかなくて大変だ。"],
+       ["Many people [[struggle with]] English pronunciation.","多くの人が英語の発音に苦労している。"]],
+   usage:"struggle to + 動詞（〜するのに苦労する）、struggle with + 名詞（〜に苦戦する）。have trouble より「頑張っているけど大変」な感じ。",
+   rel:[["have a hard time","苦労する"],["have trouble ~ing","〜するのに困る"],["It's a struggle.","大変なんだ"],["manage to","なんとか〜する"]] },
+   phrase: { en:"It's up to you.", lv:"A2", ja:"あなた次第だよ／任せるよ。",
+   pron:"up to you は「アップトゥユー」より「アッ(プ)タユ」と軽く。you を強く。",
+   ex:[["\"Pizza or sushi?\" \"[[It's up to you]].\"","「ピザと寿司どっちがいい？」「任せるよ」"],
+       ["[[It's up to]] the manager to decide.","決めるのはマネージャーだ。"]],
+   usage:"相手に決定を委ねる。言い方によっては投げやりに聞こえるので、I'm fine with either. と添えると親切。",
+   rel:[["I'm fine with either.","どちらでもいいよ"],["Your call.","君が決めて"],["Whatever works for you.","都合のいい方で"]] } },
+
+ { word: { en:"afford", ipa:"/əˈfɔːrd/", pos:"動詞", lv:"B1", ja:"（お金・時間の）余裕がある",
+   pron:"「ア・フォード」。最初の a は弱く、「フォー」を強く。",
+   ex:[["We can't [[afford]] a new car right now.","今は新しい車を買う余裕がない。"],
+       ["I can't [[afford to]] miss this meeting.","この会議は絶対に休めない。"]],
+   usage:"ほぼ can / can't と一緒に使う。お金だけでなく「〜するわけにはいかない」というリスクの意味でも使える。",
+   rel:[["affordable","手頃な価格の"],["be on a budget","予算が限られている"],["pricey","値が張る（口語）"],["worth it","その価値がある"]] },
+   phrase: { en:"Sounds good to me.", lv:"A2", ja:"いいと思います／賛成です。",
+   pron:"Sounds good は「サウンズグッ」と d が弱まる。good を強く。",
+   ex:[["\"Let's meet at 3.\" \"[[Sounds good to me]].\"","「3時に会おう」「いいね」"],
+       ["\"How about Italian tonight?\" \"[[Sounds good]]!\"","「今夜はイタリアンはどう？」「いいね！」"]],
+   usage:"提案への同意。to me を付けると「私は賛成」と少し丁寧に。メールの返信にも使える。",
+   rel:[["Works for me.","私は大丈夫です"],["I'm in.","乗った・参加する"],["Count me in.","私も入れて"],["Sounds like a plan.","それでいこう"]] } },
+
+ { word: { en:"deal with", ipa:"/ˈdiːl wɪð/", pos:"句動詞", lv:"B1", ja:"対処する・扱う",
+   pron:"「ディール・ウィズ」。th は舌先を軽くかむ。",
+   ex:[["I'll [[deal with]] it tomorrow.","それは明日対応するよ。"],
+       ["She's good at [[dealing with]] difficult customers.","彼女は難しいお客さんの対応が上手だ。"]],
+   usage:"問題・人・状況に向き合って処理する。handle とほぼ同じだが、より口語的。",
+   rel:[["handle","対処する"],["cope with","（困難に）なんとか対処する"],["take care of","引き受けて処理する"],["It's a big deal.","大ごとだ"]] },
+   phrase: { en:"I'll keep that in mind.", lv:"B1", ja:"覚えておきます／気に留めておきます。",
+   pron:"keep that in は「キープザッティン」とつながる。mind を強く。",
+   ex:[["Thanks for the advice. [[I'll keep that in mind]].","アドバイスありがとう。覚えておきます。"],
+       ["[[Keep in mind]] that the store closes at 8.","お店は8時に閉まるので気をつけて。"]],
+   usage:"アドバイスや注意を受けたときの返事。Keep in mind that... は「〜に留意して」と伝えるときに使える。",
+   rel:[["Noted.","了解しました（ビジネス）"],["Bear in mind","〜を心に留める"],["I'll remember that.","覚えておくね"]] } },
+
+ { word: { en:"assume", ipa:"/əˈsuːm/", pos:"動詞", lv:"B2", ja:"（確認せずに）思い込む・想定する",
+   pron:"「アスーム」で「スー」を強く。",
+   ex:[["I [[assumed]] you already knew.","もう知っていると思っていた。"],
+       ["Let's [[assume]] the budget stays the same.","予算は変わらないと仮定しましょう。"]],
+   usage:"根拠なく「そうだと思う」こと。誤解のあとに I assumed... と言うと、責めずに状況を説明できる。",
+   rel:[["suppose","〜だと思う"],["take for granted","当然と思う"],["assumption","思い込み・前提（名詞）"],["guess","推測する"]] },
+   phrase: { en:"What do you mean by that?", lv:"A2", ja:"それはどういう意味ですか？",
+   pron:"What do you は「ワダユ」と短縮。mean を強く。",
+   ex:[["Sorry, [[what do you mean by]] \"flexible\"?","すみません、「柔軟に」とはどういう意味ですか？"],
+       ["[[What do you mean]] you're quitting?","辞めるってどういうこと？"]],
+   usage:"相手の言葉の意味を確認する。言い方次第で詰問に聞こえるので、Sorry, を前に付けると柔らかい。",
+   rel:[["Could you clarify?","はっきりさせてもらえますか"],["In what sense?","どういう意味で？"],["Do you mean...?","〜という意味ですか？"]] } },
+
+ { word: { en:"clarify", ipa:"/ˈklerəfaɪ/", pos:"動詞", lv:"B2", ja:"はっきりさせる・明確にする",
+   pron:"最初の「クレ」を強く。「クレリファイ」。",
+   ex:[["Could you [[clarify]] what you mean?","どういう意味か明確にしてもらえますか？"],
+       ["Just to [[clarify]], the meeting is online, right?","念のため確認ですが、会議はオンラインですよね？"]],
+   usage:"Just to clarify, ... は確認したいときの決まった書き出し。相手を疑う感じにならない。",
+   rel:[["confirm","確認する"],["explain","説明する"],["clear up","（誤解を）解く"],["clarification","説明・確認（名詞）"]] },
+   phrase: { en:"I was wondering if you could help me.", lv:"B1", ja:"もしよければ手伝っていただけないでしょうか。",
+   pron:"wondering は「ワンダリング」（wandering「ワンダリング」と区別：ワの口が小さい /ʌ/）。",
+   ex:[["[[I was wondering if]] you could send me the file.","ファイルを送っていただけないかと思いまして。"],
+       ["[[I was wondering if]] you're free this weekend.","今週末空いてるかなと思って。"]],
+   usage:"過去形にすることで遠回しで丁寧な依頼になる。Can you...? より控えめで、目上の人やお願いしにくいときに。",
+   rel:[["Would it be possible to...?","〜は可能でしょうか"],["Do you think you could...?","〜してもらえそう？"],["Would you mind ~ing?","〜していただけますか"]] } },
+
+ { word: { en:"eventually", ipa:"/ɪˈventʃuəli/", pos:"副詞", lv:"B1", ja:"最終的に・結局は",
+   pron:"「イヴェンチュアリ」で「ヴェ」を強く。",
+   ex:[["It took a while, but we [[eventually]] found the problem.","時間はかかったが、最終的に問題を見つけた。"],
+       ["You'll get used to it [[eventually]].","そのうち慣れるよ。"]],
+   usage:"時間や苦労のあとで「ついに」。日本語の「イベント」とは無関係。",
+   ng:"✕ eventually＝「もしかすると」ではない。「もしかすると」は possibly / maybe。",
+   rel:[["finally","ついに"],["in the end","結局"],["sooner or later","遅かれ早かれ"],["at last","やっと"]] },
+   phrase: { en:"Long time no see.", lv:"A2", ja:"久しぶり！",
+   pron:"4語を同じ強さで「ロングタイムノーシー」。see を少し上げる。",
+   ex:[["Hey, [[long time no see]]! How have you been?","やあ、久しぶり！元気だった？"],
+       ["[[Long time no see]]! You look great.","久しぶり！元気そうだね。"]],
+   usage:"カジュアルな再会のあいさつ。ビジネスでは It's been a while. や It's great to see you again. が無難。",
+   rel:[["It's been a while.","しばらくぶりですね"],["How have you been?","元気でしたか？"],["What have you been up to?","最近どうしてた？"]] } },
+
+ { word: { en:"handle", ipa:"/ˈhændl/", pos:"動詞・名詞", lv:"B1", ja:"対処する・扱う／取っ手",
+   pron:"「ハンドゥル」。a は「ア」と「エ」の中間 /æ/。",
+   ex:[["Can you [[handle]] this by yourself?","これ、一人で対応できる？"],
+       ["She [[handled]] the situation really well.","彼女はその状況にうまく対処した。"]],
+   usage:"仕事や問題を任せる・引き受けるときに使う。車の「ハンドル」は英語では steering wheel。",
+   ng:"✕ car handle（ハンドル）→ 〇 steering wheel",
+   rel:[["manage","やりくりする"],["deal with","対処する"],["in charge of","担当して"],["I can't handle it.","もう無理（限界）"]] },
+   phrase: { en:"It depends.", lv:"A2", ja:"場合によるね。",
+   pron:"「イッディペンズ」。t は弱く、pen を強く。",
+   ex:[["\"How long does it take?\" \"[[It depends]] on traffic.\"","「どのくらいかかる？」「交通状況によるね」"],
+       ["[[It depends on]] what you want to do.","何をしたいかによるよ。"]],
+   usage:"何によるかは on で続ける。それだけで終わらせず理由を添えると会話が続く。",
+   rel:[["It varies.","まちまちだ"],["Case by case.","ケースバイケース"],["That depends on...","それは〜次第だ"]] } },
+
+ { word: { en:"prefer", ipa:"/prɪˈfɝː/", pos:"動詞", lv:"A2", ja:"（〜のほうを）好む",
+   pron:"後ろの「ファー」を強く。「プリファー」。",
+   ex:[["I [[prefer]] tea to coffee.","コーヒーより紅茶のほうが好きです。"],
+       ["Would you [[prefer]] to meet online?","オンラインで会うほうがいいですか？"]],
+   usage:"比較の相手は than ではなく to。Would you prefer...? は相手の希望を丁寧に聞ける。",
+   ng:"✕ prefer A than B → 〇 prefer A to B",
+   rel:[["would rather","むしろ〜したい"],["preference","好み（名詞）"],["go for","〜を選ぶ"],["favorite","一番好きな"]] },
+   phrase: { en:"Just to make sure we're on the same page...", lv:"B2", ja:"認識を合わせておきたいのですが…",
+   pron:"same page は「セイムペイジ」とリズムよく。page を強く。",
+   ex:[["[[Just to make sure we're on the same page]], the deadline is the 20th?","認識合わせですが、締め切りは20日ですよね？"],
+       ["Let's get everyone [[on the same page]] before we start.","始める前に全員の認識をそろえよう。"]],
+   usage:"誤解を防ぐための確認。会議の最後のまとめでよく使う。",
+   rel:[["Just to confirm,...","確認ですが"],["Let's recap.","要点をまとめましょう"],["We're aligned.","認識は一致している"]] } },
+
+ { word: { en:"specific", ipa:"/spəˈsɪfɪk/", pos:"形容詞", lv:"B1", ja:"具体的な・特定の",
+   pron:"「スペ・シ・フィック」の「シ」を強く。",
+   ex:[["Could you be more [[specific]]?","もう少し具体的に言ってもらえますか？"],
+       ["Do you have a [[specific]] date in mind?","具体的な日にちは考えていますか？"]],
+   usage:"ぼんやりした指示を受けたときに Could you be more specific? が使える。副詞 specifically も便利。",
+   rel:[["particular","特定の"],["detailed","詳しい"],["vague","あいまいな（反対）"],["for example","たとえば"]] },
+   phrase: { en:"I'm not sure I follow.", lv:"B1", ja:"よくわからないのですが…（話についていけていない）",
+   pron:"not sure は「ナッシュア」とつながる。follow を強く。",
+   ex:[["Sorry, [[I'm not sure I follow]]. Could you say that again?","すみません、ちょっとついていけていません。もう一度言っていただけますか？"],
+       ["[[Are you following]] me so far?","ここまでついてきてる？"]],
+   usage:"I don't understand より柔らかく、自分の理解不足として伝えられる。follow＝話についていく。",
+   rel:[["I'm lost.","わからなくなった"],["Could you say that again?","もう一度お願いします"],["You lost me.","話がわからなくなった（口語）"]] } },
+
+ { word: { en:"reliable", ipa:"/rɪˈlaɪəbl/", pos:"形容詞", lv:"B1", ja:"信頼できる・頼りになる",
+   pron:"「ライ」を強く。「リライアブル」。",
+   ex:[["He's one of our most [[reliable]] team members.","彼はチームで最も頼りになるメンバーの一人だ。"],
+       ["Is this information [[reliable]]?","この情報は信頼できる？"]],
+   usage:"人・物・情報・交通機関など「期待どおりに機能する」ものに使う。動詞は rely on（頼る）。",
+   rel:[["rely on","〜に頼る"],["dependable","頼りになる"],["trustworthy","信用できる"],["unreliable","当てにならない"]] },
+   phrase: { en:"Would you mind if I opened the window?", lv:"B1", ja:"窓を開けてもいいですか？",
+   pron:"Would you は「ウッジュ」。mind を強く。",
+   ex:[["[[Would you mind if I]] sat here?","ここに座ってもいいですか？"],
+       ["[[Would you mind]] closing the door?","ドアを閉めていただけますか？"]],
+   usage:"mind は「気にする」なので、OKの返事は No, not at all.（全然気にしない）。Yes と答えると「嫌です」になるので注意。",
+   ng:"✕ OKのつもりで \"Yes.\" → 〇 \"No, not at all.\" / \"Go ahead.\"",
+   rel:[["Do you mind if...?","〜してもいい？（少しカジュアル）"],["Go ahead.","どうぞ"],["Is it okay if...?","〜しても大丈夫？"]] } },
+
+ { word: { en:"recommend", ipa:"/ˌrekəˈmend/", pos:"動詞", lv:"A2", ja:"勧める・推薦する",
+   pron:"最後の「メンド」を強く。「レカメンド」。",
+   ex:[["Can you [[recommend]] a good restaurant nearby?","近くでいいレストランを教えてくれますか？"],
+       ["I [[recommend]] booking in advance.","事前に予約することをお勧めします。"]],
+   usage:"recommend + ~ing、または recommend that 人 + 動詞の原形。「人に勧める」は recommend 物 to 人。",
+   ng:"✕ I recommend you to go → 〇 I recommend going. / I recommend (that) you go.",
+   rel:[["suggest","提案する"],["What would you recommend?","おすすめは何ですか？"],["highly recommended","強くおすすめ"],["go-to","定番の・頼りになる"]] },
+   phrase: { en:"Take your time.", lv:"A2", ja:"ゆっくりでいいですよ。",
+   pron:"Take your は「テイキュア」とつながる。time を強く。",
+   ex:[["No rush. [[Take your time]].","急がなくていいよ。ゆっくりどうぞ。"],
+       ["[[Take your time]] and let me know what you think.","じっくり考えて意見を聞かせてね。"]],
+   usage:"相手を急かさない気づかい。返事待ちのメールにも使える。",
+   rel:[["No rush.","急がないよ"],["Whenever you're ready.","準備ができたら"],["There's no hurry.","急ぐ必要はないよ"]] } },
+
+ { word: { en:"efficient", ipa:"/ɪˈfɪʃənt/", pos:"形容詞", lv:"B1", ja:"効率的な・無駄がない",
+   pron:"「フィ」を強く。「イフィシェント」。",
+   ex:[["This new system is much more [[efficient]].","この新しいシステムはずっと効率的だ。"],
+       ["Let's find a more [[efficient]] way to do this.","もっと効率的なやり方を見つけよう。"]],
+   usage:"時間・お金・エネルギーを無駄にしないこと。effective（効果がある）と混同しやすい。",
+   ng:"efficient＝無駄がない／effective＝ちゃんと効果がある。両方ほめるなら efficient and effective。",
+   rel:[["effective","効果的な"],["productive","生産的な"],["save time","時間を節約する"],["streamline","合理化する"]] },
+   phrase: { en:"Fair enough.", lv:"B1", ja:"それはもっともだね／まあ、そうだね。",
+   pron:"「フェアイナフ」と一つにつなげる。fair を強く。",
+   ex:[["\"I can't come because I'm sick.\" \"[[Fair enough]].\"","「体調が悪くて行けない」「それなら仕方ないね」"],
+       ["[[Fair enough]], let's try it your way.","もっともだね、君のやり方でやってみよう。"]],
+   usage:"相手の理由や意見を「納得・受け入れた」ときの返事。全面賛成ではなく「理解はした」くらいの温度。",
+   rel:[["That's reasonable.","理にかなっている"],["I get it.","わかるよ"],["Point taken.","言いたいことはわかった"]] } },
+
+ { word: { en:"postpone", ipa:"/poʊstˈpoʊn/", pos:"動詞", lv:"B1", ja:"延期する",
+   pron:"後ろの「ポウン」を強く。「ポウストポウン」。",
+   ex:[["The event has been [[postponed]] until next month.","イベントは来月まで延期された。"],
+       ["Can we [[postpone]] the decision?","決定を先送りにできますか？"]],
+   usage:"後ろにずらすことに限定。日時を前後どちらかに変えるなら reschedule。中止は cancel / call off。",
+   rel:[["put off","先延ばしにする（口語）"],["delay","遅らせる"],["reschedule","日程を変更する"],["cancel","中止する"]] },
+   phrase: { en:"I couldn't agree more.", lv:"B1", ja:"まったくその通りです。",
+   pron:"couldn't の t は弱く「クドゥン」。more を強く。",
+   ex:[["\"We need more people on this project.\" \"[[I couldn't agree more]].\"","「このプロジェクトにはもっと人が必要だ」「まったく同感です」"],
+       ["[[I couldn't agree more]] with what you said.","おっしゃったことに完全に同意します。"]],
+   usage:"否定形だが「これ以上同意できないほど同意」＝強い賛成。I agree より熱意が伝わる。",
+   rel:[["Absolutely.","まったくです"],["Exactly.","その通り"],["You can say that again.","まさにそうだね"],["I agree to some extent.","ある程度は同意します"]] } },
+
+ { word: { en:"overwhelmed", ipa:"/ˌoʊvərˈwelmd/", pos:"形容詞", lv:"B2", ja:"（量や感情に）圧倒された・いっぱいいっぱい",
+   pron:"「ウェルムド」を強く。h はほぼ発音しない。",
+   ex:[["I'm a bit [[overwhelmed]] with work this week.","今週は仕事でちょっといっぱいいっぱいだ。"],
+       ["She was [[overwhelmed]] by everyone's kindness.","彼女はみんなの優しさに胸がいっぱいになった。"]],
+   usage:"忙しすぎるとき、感動したとき、どちらにも使える。I'm busy より「手に負えない」ニュアンス。",
+   rel:[["swamped","（仕事で）手一杯の"],["stressed out","ストレスでまいっている"],["have a lot on my plate","やることが山積み"],["overwhelming","圧倒的な"]] },
+   phrase: { en:"Let's call it a day.", lv:"B1", ja:"今日はここまでにしよう。",
+   pron:"call it a は「コーリタ」とつながる。day を強く。",
+   ex:[["It's already 7. [[Let's call it a day]].","もう7時だ。今日はここまでにしよう。"],
+       ["I think we should [[call it a day]] and finish tomorrow.","今日は切り上げて明日終わらせよう。"]],
+   usage:"仕事や作業を切り上げるときの定番。夜なら Let's call it a night. とも言う。",
+   rel:[["That's it for today.","今日はここまで"],["Let's wrap up.","まとめに入ろう・終わろう"],["I'm heading out.","お先に失礼します"]] } }
+];
+
+/* ---------- state ---------- */
+const START = new Date(2026, 9, 14);       // Day 1
+const MS_DAY = 86400000;
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("den:" + k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem("den:" + k, JSON.stringify(v)); } catch {} }
+};
+const ALL = DAYS.flatMap((d, i) => [{ ...d.word, type: "word", day: i, id: "w" + i }, { ...d.phrase, type: "phrase", day: i, id: "p" + i }]);
+const byId = Object.fromEntries(ALL.map(x => [x.id, x]));
+let learned = new Set(store.get("learned", []));
+let saved = new Set(store.get("saved", []));
+let doneDates = new Set(store.get("done", []));
+let settings = store.get("settings", { voice: "en-US", rate: "1" });
+
+const ymd = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const today0 = () => { const t = new Date(); return new Date(t.getFullYear(), t.getMonth(), t.getDate()); };
+const dayNumber = date => Math.round((date - START) / MS_DAY);           // 0-based
+const lessonIndex = n => ((n % DAYS.length) + DAYS.length) % DAYS.length;
+let offset = 0;                                                          // 0 = today, -1 = yesterday...
+
+/* ---------- speech ---------- */
+const canSpeak = "speechSynthesis" in window;
+let voices = [];
+function loadVoices() { try { voices = speechSynthesis.getVoices(); } catch {} }
+if (canSpeak) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+else document.getElementById("tts-note").textContent = "このブラウザは音声読み上げに対応していません。発音記号とヒントを参考にしてください。";
+function speak(text, btn) {
+  if (!canSpeak) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text.replace(/\[\[|\]\]/g, ""));
+  u.lang = settings.voice; u.rate = parseFloat(settings.rate);
+  const v = voices.find(v => v.lang === settings.voice) || voices.find(v => v.lang.startsWith("en"));
+  if (v) u.voice = v;
+  document.querySelectorAll(".speak.playing").forEach(b => b.classList.remove("playing"));
+  if (btn) { btn.classList.add("playing"); u.onend = u.onerror = () => btn.classList.remove("playing"); }
+  speechSynthesis.speak(u);
+}
+
+/* ---------- helpers ---------- */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const marked = s => esc(s).replace(/\[\[(.+?)\]\]/g, "<mark>$1</mark>");
+const plain = s => s.replace(/\[\[|\]\]/g, "");
+const ICON = {
+  play: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>',
+  left: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>',
+  right: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  star: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg>'
+};
+const speakBtn = (text, label = "発音", sm = false) => `<button class="speak${sm ? " sm" : ""}" data-say="${esc(plain(text))}" aria-label="${esc(plain(text))} を再生">${ICON.play}${label}</button>`;
+
+function entryHTML(it) {
+  return `<article class="entry" data-id="${it.id}">
+    <div class="entry-head">
+      <div class="kind">${it.type === "word" ? "今日の単語" : "今日のフレーズ"}${it.pos ? " · " + esc(it.pos) : ""}<span class="lv" title="CEFRレベルの目安">${it.lv}</span></div>
+      <div class="term-row"><h2 class="term">${esc(it.en)}</h2>${speakBtn(it.en)}</div>
+      ${it.ipa ? `<div class="ipa">${esc(it.ipa)}</div>` : ""}
+      <p class="meaning">${esc(it.ja)}</p>
+    </div>
+    <div class="sec"><h3>発音のコツ</h3><div class="pron-tip">${esc(it.pron)}</div></div>
+    <div class="sec"><h3>例文</h3><div>
+      ${it.ex.map(([en, ja]) => `<div class="ex"><div class="en">${marked(en)}</div>${speakBtn(en, "", true)}<div class="ja">${esc(ja)}</div></div>`).join("")}
+    </div></div>
+    <div class="sec"><h3>使い方</h3><div class="usage"><p>${esc(it.usage)}</p>${it.ng ? `<div class="ng"><b>注意</b> ${esc(it.ng)}</div>` : ""}</div></div>
+    <div class="sec"><h3>関連する表現</h3><div class="related">
+      ${it.rel.map(([en, ja]) => `<button class="rel" data-say="${esc(en)}"><span class="r-en">${esc(en)}</span><span class="r-ja">${esc(ja)}</span><span class="r-tag">${ICON.play.replace("<svg", '<svg width="14" height="14"')}</span></button>`).join("")}
+    </div></div>
+    <div class="actions">
+      <button class="btn${learned.has(it.id) ? " on" : ""}" data-toggle="learned" data-id="${it.id}">${ICON.check}${learned.has(it.id) ? "覚えた！" : "覚えた"}</button>
+      <button class="btn${saved.has(it.id) ? " on" : ""}" data-toggle="saved" data-id="${it.id}">${ICON.star}${saved.has(it.id) ? "保存済み" : "単語帳に保存"}</button>
+    </div>
+  </article>`;
+}
+
+/* ---------- views ---------- */
+function renderToday() {
+  const date = new Date(today0().getTime() + offset * MS_DAY);
+  const n = dayNumber(date), li = lessonIndex(n);
+  const d = DAYS[li];
+  const key = ymd(date);
+  const isDone = doneDates.has(key);
+  const label = offset === 0 ? "今日" : offset === -1 ? "昨日" : `${-offset}日前`;
+  document.getElementById("view-today").innerHTML = `
+    <div class="daynav">
+      <button class="iconbtn" id="prev" aria-label="前の日">${ICON.left}</button>
+      <div class="label"><strong>Day ${n + 1}</strong><span>${label} · ${date.getMonth() + 1}月${date.getDate()}日</span></div>
+      <button class="iconbtn" id="next" aria-label="次の日" ${offset >= 0 ? "disabled" : ""}>${ICON.right}</button>
+    </div>
+    ${entryHTML({ ...d.word, type: "word", id: "w" + li })}
+    ${entryHTML({ ...d.phrase, type: "phrase", id: "p" + li })}
+    <div class="done-banner">${isDone ? `<b>✓ この日のレッスンは完了しています</b>` : `例文を声に出して読んだら、<button class="btn primary" id="go-quiz">クイズで確認する</button>`}</div>`;
+  document.getElementById("prev").onclick = () => { offset--; quiz = null; renderToday(); };
+  document.getElementById("next").onclick = () => { if (offset < 0) { offset++; quiz = null; renderToday(); } };
+  const gq = document.getElementById("go-quiz"); if (gq) gq.onclick = () => showTab("quiz");
+}
+
+let quiz = null;
+function makeQuiz() {
+  const date = new Date(today0().getTime() + offset * MS_DAY);
+  const li = lessonIndex(dayNumber(date));
+  const focus = [byId["w" + li], byId["p" + li]];
+  const pool = ALL.filter(x => x.day !== li);
+  const review = shuffle(pool.filter(x => saved.has(x.id) || learned.has(x.id))).concat(shuffle(pool)).filter((x, i, a) => a.indexOf(x) === i).slice(0, 3);
+  const items = [...focus, ...review];
+  const qs = [];
+  items.forEach((it, i) => {
+    const kind = i % 2 === 0 ? "meaning" : "blank";
+    if (kind === "meaning") {
+      const opts = shuffle([it, ...shuffle(ALL.filter(x => x.id !== it.id && x.type === it.type)).slice(0, 3)]);
+      qs.push({ kind, it, q: it.en, opts: opts.map(o => ({ t: o.ja, ok: o.id === it.id })) });
+    } else {
+      const [en, ja] = it.ex[Math.floor(Math.random() * it.ex.length)];
+      const answer = (en.match(/\[\[(.+?)\]\]/) || [, it.en])[1];
+      const others = shuffle(ALL.filter(x => x.id !== it.id && x.type === it.type)).slice(0, 3).map(o => (o.ex[0][0].match(/\[\[(.+?)\]\]/) || [, o.en])[1]);
+      qs.push({ kind, it, q: en, ja, opts: shuffle([{ t: answer, ok: true }, ...others.map(t => ({ t, ok: false }))]) });
+    }
+  });
+  quiz = { qs: shuffle(qs.slice(0, 2)).concat(qs.slice(2)), i: 0, results: [], key: ymd(date) };
+}
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function renderQuiz() {
+  const v = document.getElementById("view-quiz");
+  if (!quiz) makeQuiz();
+  const prog = `<div class="qprog">${quiz.qs.map((_, i) => `<i class="${quiz.results[i] === true ? "ok" : quiz.results[i] === false ? "ng" : i === quiz.i ? "cur" : ""}"></i>`).join("")}</div>`;
+  if (quiz.i >= quiz.qs.length) {
+    const score = quiz.results.filter(Boolean).length;
+    doneDates.add(quiz.key); store.set("done", [...doneDates]); updateStats();
+    const missed = quiz.qs.filter((q, i) => !quiz.results[i]).map(q => q.it);
+    v.innerHTML = `<div class="quiz">${prog}
+      <div class="qtype">結果</div>
+      <div class="score">${score} / ${quiz.qs.length}</div>
+      <p class="qsub">${score === quiz.qs.length ? "全問正解！今日のレッスンは完了です。" : "レッスン完了。間違えた表現をもう一度見直しましょう。"}</p>
+      ${missed.length ? `<div class="related">${missed.map(m => `<button class="rel" data-open="${m.id}"><span class="r-en">${esc(m.en)}</span><span class="r-ja">${esc(m.ja)}</span><span class="r-tag">開く</span></button>`).join("")}</div>` : ""}
+      <div class="actions"><button class="btn primary" id="q-again">もう一度挑戦</button><button class="btn" id="q-lib">単語帳を見る</button></div></div>`;
+    document.getElementById("q-again").onclick = () => { quiz = null; renderQuiz(); };
+    document.getElementById("q-lib").onclick = () => showTab("library");
+    return;
+  }
+  const q = quiz.qs[quiz.i];
+  const answered = quiz.results[quiz.i] !== undefined;
+  const qtext = q.kind === "meaning"
+    ? `<p class="qtext">${esc(q.q)}</p><p class="qsub">意味として正しいものは？</p>`
+    : `<p class="qtext">${esc(q.q).replace(/\[\[(.+?)\]\]/, answered ? "<mark>$1</mark>" : '<span class="blank">&nbsp;</span>')}</p><p class="qsub">${esc(q.ja)}</p>`;
+  v.innerHTML = `<div class="quiz">${prog}
+    <div class="qtype">問題 ${quiz.i + 1} · ${q.kind === "meaning" ? "意味を選ぶ" : "空欄に入る表現は？"}</div>
+    ${qtext}
+    <div class="choices">${q.opts.map((o, i) => `<button class="choice" data-i="${i}" ${answered ? "disabled" : ""}>${esc(o.t)}</button>`).join("")}</div>
+    <div class="feedback" id="fb"></div></div>`;
+  v.querySelectorAll(".choice").forEach(b => b.onclick = () => {
+    const o = q.opts[+b.dataset.i];
+    quiz.results[quiz.i] = o.ok;
+    v.querySelectorAll(".choice").forEach((c, i) => { c.disabled = true; if (q.opts[i].ok) c.classList.add("correct"); });
+    if (!o.ok) b.classList.add("wrong");
+    if (q.kind === "blank") v.querySelector(".qtext").innerHTML = marked(q.q);
+    v.querySelector("#fb").innerHTML = `<p style="margin:0 0 10px">${o.ok ? '<b style="color:var(--good)">正解！</b>' : '<b style="color:var(--bad)">おしい</b>'} ${esc(q.it.en)} ＝ ${esc(q.it.ja)}</p>
+      <div class="actions" style="border:0;padding:0">${speakBtn(q.kind === "blank" ? q.q : q.it.en)}<button class="btn primary" id="q-next">${quiz.i + 1 < quiz.qs.length ? "次の問題" : "結果を見る"}</button></div>`;
+    v.querySelector("#q-next").onclick = () => { quiz.i++; renderQuiz(); };
+  });
+}
+
+let libFilter = "all", libQuery = "";
+function renderLibrary() {
+  const v = document.getElementById("view-library");
+  if (!v.dataset.init) {
+    v.dataset.init = 1;
+    v.innerHTML = `<div class="filters">
+      <input class="search" id="lib-q" type="search" placeholder="英語・日本語で検索" aria-label="検索">
+      <button class="chip" data-f="all" aria-pressed="true">すべて</button>
+      <button class="chip" data-f="saved" aria-pressed="false">保存</button>
+      <button class="chip" data-f="todo" aria-pressed="false">未習得</button>
+      <button class="chip" data-f="learned" aria-pressed="false">覚えた</button>
+    </div><div class="list" id="lib-list"></div>`;
+    v.querySelector("#lib-q").oninput = e => { libQuery = e.target.value.trim().toLowerCase(); renderLibrary(); };
+    v.querySelectorAll(".chip").forEach(c => c.onclick = () => { libFilter = c.dataset.f; v.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", x === c)); renderLibrary(); });
+  }
+  const items = ALL.filter(x =>
+    (libFilter === "all" || (libFilter === "saved" && saved.has(x.id)) || (libFilter === "learned" && learned.has(x.id)) || (libFilter === "todo" && !learned.has(x.id))) &&
+    (!libQuery || (x.en + " " + x.ja + " " + x.rel.map(r => r.join(" ")).join(" ")).toLowerCase().includes(libQuery)));
+  const emptyMsg = libFilter === "saved" ? "まだ保存した表現はありません。カードの「単語帳に保存」で追加できます。" : libFilter === "learned" ? "「覚えた」を押した表現がここに並びます。" : "一致する表現がありません。";
+  v.querySelector("#lib-list").innerHTML = items.length ? items.map(x => `<button class="row" data-open="${x.id}">
+      <span class="r1">${esc(x.en)}</span><span class="r2">${esc(x.ja)} · Day ${x.day + 1}の${x.type === "word" ? "単語" : "フレーズ"}</span>
+      <span class="flags">${learned.has(x.id) ? '<span class="flag-l">覚えた</span>' : ""}${saved.has(x.id) ? '<span class="flag-s">保存</span>' : ""}</span></button>`).join("")
+    : `<div class="empty">${emptyMsg}</div>`;
+}
+
+function openModal(id) {
+  const back = document.createElement("div");
+  back.className = "modal-back";
+  back.innerHTML = `<div class="modal" role="dialog" aria-modal="true">${entryHTML(byId[id])}<div style="background:var(--card);padding:0 20px 20px;display:flex;justify-content:flex-end"><button class="btn" id="m-close">閉じる</button></div></div>`;
+  back.onclick = e => { if (e.target === back) back.remove(); };
+  document.body.appendChild(back);
+  back.querySelector("#m-close").onclick = () => back.remove();
+}
+
+function updateStats() {
+  let s = 0, d = today0();
+  if (!doneDates.has(ymd(d))) d = new Date(d.getTime() - MS_DAY);   // today not yet done: count from yesterday
+  while (doneDates.has(ymd(d))) { s++; d = new Date(d.getTime() - MS_DAY); }
+  document.getElementById("st-streak").textContent = s;
+  document.getElementById("st-learned").textContent = learned.size;
+  document.getElementById("st-days").textContent = doneDates.size;
+}
+
+function showTab(t) {
+  ["today", "quiz", "library"].forEach(x => {
+    document.getElementById("view-" + x).hidden = x !== t;
+    document.getElementById("view-" + x).style.display = x === t ? "flex" : "";
+    document.getElementById("tab-" + x).setAttribute("aria-selected", x === t);
+  });
+  if (t === "quiz") { if (quiz && quiz.i >= quiz.qs.length) quiz = null; renderQuiz(); }
+  if (t === "library") renderLibrary();
+  if (t === "today") renderToday();
+}
+
+/* ---------- global events ---------- */
+document.addEventListener("click", e => {
+  const say = e.target.closest("[data-say]"); if (say) { speak(say.dataset.say, say.classList.contains("speak") ? say : null); return; }
+  const open = e.target.closest("[data-open]"); if (open) { openModal(open.dataset.open); return; }
+  const tog = e.target.closest("[data-toggle]");
+  if (tog) {
+    const set = tog.dataset.toggle === "learned" ? learned : saved, id = tog.dataset.id;
+    set.has(id) ? set.delete(id) : set.add(id);
+    store.set(tog.dataset.toggle, [...set]); updateStats();
+    document.querySelectorAll(`[data-toggle="${tog.dataset.toggle}"][data-id="${id}"]`).forEach(b => {
+      const on = set.has(id); b.classList.toggle("on", on);
+      b.innerHTML = tog.dataset.toggle === "learned" ? ICON.check + (on ? "覚えた！" : "覚えた") : ICON.star + (on ? "保存済み" : "単語帳に保存");
+    });
+    if (!document.getElementById("view-library").hidden) renderLibrary();
+  }
+});
+document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => showTab(b.dataset.tab));
+const sv = document.getElementById("set-voice"), sr = document.getElementById("set-rate");
+sv.value = settings.voice; sr.value = settings.rate;
+sv.onchange = () => { settings.voice = sv.value; store.set("settings", settings); };
+sr.onchange = () => { settings.rate = sr.value; store.set("settings", settings); };
+document.addEventListener("keydown", e => { if (e.key === "Escape") document.querySelector(".modal-back")?.remove(); });
+
+updateStats();
+const initial = ["quiz", "library"].includes(location.hash.slice(1)) ? location.hash.slice(1) : "today";
+showTab(initial);
+</script>
